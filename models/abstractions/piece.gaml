@@ -20,7 +20,7 @@ species Piece {
 	}
 
 	action move_to (Plan cell) {
-		if(cell.value != nil) {
+		if(cell.value != nil and cell.value != self) {
 			ask cell.value {
 				write '' + self + ' is dead!!';
 				do die;

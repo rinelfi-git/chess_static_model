@@ -14,6 +14,11 @@ species Queen parent: LongRoadedPiece {
 	action compute_movement {
 		is_clicked <- true;
 		ask current_cell {
+		// set color first
+			status <- 1;
+			do repaint;
+
+			// check if there are possible roads
 			list<Plan> possible_roads <- neighbors;
 			loop possible_road over: possible_roads {
 				ask myself {

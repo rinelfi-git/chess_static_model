@@ -14,6 +14,11 @@ species Rook parent: LongRoadedPiece {
 	action compute_movement {
 		is_clicked <- true;
 		ask current_cell {
+		// set color first
+			status <- 1;
+			do repaint;
+
+			// check if there are possible roads
 			list<Plan> possible_roads <- neighbors where (each.grid_x = grid_x and (each.grid_y = grid_y + 1 or each.grid_y = grid_y - 1) or each.grid_y = grid_y and
 			(each.grid_x = grid_x + 1 or each.grid_x = grid_x - 1));
 			loop possible_road over: possible_roads {

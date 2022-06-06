@@ -13,6 +13,11 @@ species Knight parent: Piece {
 	action compute_movement {
 		is_clicked <- true;
 		ask current_cell {
+		// set color first
+			status <- 1;
+			do repaint;
+
+			// check if there are possible roads
 			list<Plan>
 			possible_roads <- [Plan[grid_x - 1, grid_y - 2], Plan[grid_x + 1, grid_y - 2], Plan[grid_x - 1, grid_y + 2], Plan[grid_x + 1, grid_y + 2], Plan[grid_x - 2, grid_y - 1], Plan[grid_x + 2, grid_y - 1], Plan[grid_x - 2, grid_y + 1], Plan[grid_x + 2, grid_y + 1]]
 			where (each != nil);
