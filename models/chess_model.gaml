@@ -25,8 +25,10 @@ global {
 	rgb dark_cell_color;
 	rgb target_cell_color;
 	rgb road_cell_color;
+	string turn;
 
 	init {
+		turn <- 'white';
 		create WhiteRook number: 2;
 		create BlackRook number: 2;
 		create WhiteKnight number: 2;
@@ -108,36 +110,60 @@ global {
 		ask BlackQueen {
 			do move_to cell: Plan grid_at {3, 0};
 		}
-		
+
 		loop i from: 0 to: 7 {
 			ask BlackPawn[i] {
 				do move_to cell: Plan grid_at {i, 1};
 				is_first_movement <- true;
 			}
-			
+
 			ask WhitePawn[i] {
 				do move_to cell: Plan grid_at {i, 6};
 				is_first_movement <- true;
 			}
+
 		}
+
 	}
 
 	action handle_mouse_event {
 		list<Plan> selected_roads <- Plan where (each.status > 0 and each overlaps #user_location);
-		write 'selected roads' +  selected_roads;
 		if (length(selected_roads) > 0) {
-			ask agents of_generic_species Piece where(each.is_clicked) {
-				ask selected_roads {
-					ask myself {
-						do move_to cell: myself;
-					}
-				}
+			ask Plan where (each.status > 0) {
+				status <- 0;
+				do repaint;
 			}
+
+			ask agents of_generic_species Piece where (each.is_clicked) {
+				ask selected_roads {
+					if (self != myself.current_cell) {
+						ask myself {
+							write 'Player: moved ' + self + ' from : ' + current_cell + ' to : ' + myself;
+							do move_to cell: myself;
+							turn <- turn = 'white' ? 'black' : 'white';
+						}
+
+					} else {
+						ask myself {
+							is_clicked <- false;
+						}
+
+					}
+
+				}
+
+			}
+
 		} else {
 			ask agents of_generic_species Piece {
 				is_clicked <- false;
 			}
-			list<Piece> selected_pieces <- agents of_generic_species Piece where (each.current_cell overlaps #user_location);
+
+			list<Piece> selected_pieces <- agents of_generic_species Piece where (each.current_cell overlaps #user_location and each.side = turn);
+			if (length(selected_pieces) = 0) {
+				write 'Impossible to move it is "' + turn + '" turn';
+			}
+
 			ask Plan {
 				status <- 0;
 				do repaint;
