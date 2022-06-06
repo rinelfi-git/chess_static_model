@@ -138,7 +138,6 @@ global {
 				ask selected_roads {
 					if (self != myself.current_cell) {
 						ask myself {
-							write 'Player: moved ' + self + ' from : ' + current_cell + ' to : ' + myself;
 							do move_to cell: myself;
 							turn <- turn = 'white' ? 'black' : 'white';
 						}
@@ -175,6 +174,33 @@ global {
 
 		}
 
+	}
+
+	reflex automaticaly_move when: turn = 'black' {
+		list<Piece> black_pieces <- agents of_generic_species Piece where (each.side = turn);
+		int range <- length(black_pieces) - 1;
+		bool looking_for_movement <- true;
+		loop while: looking_for_movement {
+			ask black_pieces[rnd(range)] {
+				ask Plan where (each.status > 0) {
+					status <- 0;
+					do repaint;
+				}
+
+				do compute_movement;
+				list<Plan> possible_roads <- Plan where (each.status > 0 and each != self.current_cell);
+				int road_range <- length(possible_roads) - 1;
+				if (length(possible_roads) > 0) {
+					Plan possible_road <- possible_roads[rnd(road_range)];
+					do move_to cell: possible_road;
+					looking_for_movement <- false;
+				}
+
+			}
+
+		}
+
+		turn <- 'white';
 	}
 
 }

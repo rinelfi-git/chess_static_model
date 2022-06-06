@@ -4,25 +4,25 @@
 * Author: Rinelfi
 * Tags: 
 */
-
-
 model pawn
+
 import '../abstractions/piece.gaml'
 /* Insert your model definition here */
 species Pawn parent: Piece {
 	bool is_first_movement;
 	int direction;
+
 	init {
 		is_first_movement <- true;
 		direction <- 0;
 	}
-	
-	action move_to(Plan cell) {
+
+	action move_to (Plan cell) {
 		invoke move_to cell: cell;
-		is_first_movement <- false;	
+		is_first_movement <- false;
 	}
-	
-	action compute_movement{
+
+	action compute_movement {
 		is_clicked <- true;
 		ask current_cell {
 		// set color first
@@ -34,14 +34,18 @@ species Pawn parent: Piece {
 			list<Plan> possible_attacks <- Plan where (each.grid_y = grid_y + myself.direction * 1 and (each.grid_x = grid_x - 1 or each.grid_x = grid_x + 1) and each.value != nil);
 			ask myself {
 				if (is_first_movement) {
-					possible_roads <- Plan where (each.value = nil and (each.grid_y = current_cell.grid_y + direction * 2 or each.grid_y = current_cell.grid_y + direction * 1) and each.grid_x = current_cell.grid_x);
+					possible_roads <- Plan where (each.grid_x = current_cell.grid_x) where(each.grid_y = current_cell.grid_y + direction * 1 or each.grid_y = current_cell.grid_y + direction * 2);
+					write possible_roads;
+					if(length(possible_roads) = 2 and possible_roads[1].value != nil) {
+						possible_roads <- [];
+					}
 				} else {
 					possible_roads <- Plan where (each.value = nil and each.grid_y = current_cell.grid_y + direction * 1 and each.grid_x = current_cell.grid_x);
 				}
 
 			}
-			
-			loop possible_road over:possible_roads {
+
+			loop possible_road over: possible_roads {
 				if (possible_road.value != nil and possible_road.value.side = myself.side) {
 					ask possible_road {
 						status <- 0;
@@ -72,8 +76,11 @@ species Pawn parent: Piece {
 					}
 
 				}
+
 			}
 
 		}
+
 	}
+
 }

@@ -32,7 +32,7 @@ species Piece {
 			}
 
 		}
-
+		write 'Player: moved ' + self + ' from : ' + current_cell + ' to : ' + cell;
 		current_cell <- cell;
 		location <- current_cell.location;
 		ask current_cell {
