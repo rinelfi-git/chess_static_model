@@ -13,6 +13,7 @@ import 'pieces/white_knight.gaml'
 import 'pieces/black_knight.gaml'
 import 'pieces/white_bishop.gaml'
 import 'pieces/black_bishop.gaml'
+import 'pieces_abstractions/king.gaml'
 import 'pieces/black_king.gaml'
 import 'pieces/white_king.gaml'
 import 'pieces/black_queen.gaml'
@@ -201,6 +202,14 @@ global {
 		}
 
 		turn <- 'white';
+	}
+
+	reflex check_death {
+		list<King> kings <- agents of_generic_species King;
+		if(length(kings) < 2) {
+			write '' + kings[0].side + ' is the winner in : ' + 0 + ' movements';
+			do pause;
+		}
 	}
 
 }

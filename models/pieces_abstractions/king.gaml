@@ -49,4 +49,5 @@ species King parent: Piece {
 
 	}
 
+
 }
